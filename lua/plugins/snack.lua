@@ -2,11 +2,16 @@
 return {
   "folke/snacks.nvim",
   opts = {
-    explorer = {
-      hidden = true, -- Show hidden files in explorer
-    },
     picker = {
-      hidden = true, -- Show hidden files in picker
+      -- Global setting (acts as a default)
+      hidden = true,
+      sources = {
+        -- Specific override for the 'Find Files' command
+        files = { hidden = true },
+      },
+    },
+    explorer = {
+      hidden = true,
     },
   },
 }
