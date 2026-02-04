@@ -12,13 +12,19 @@ return {
     {
       "<leader>uq", -- 'q' for Quiet Mode
       function()
-        -- 1. Toggle the variable for Blink (Suggestions)
-        vim.b.completion = not vim.b.completion
+        -- FIXED LOGIC:
+        -- If currently OFF (false), turn ON.
+        -- If currently ON (true) or Default (nil), turn OFF.
+        if vim.b.completion == false then
+          vim.b.completion = true
+        else
+          vim.b.completion = false
+        end
 
-        -- 2. Toggle the variable for your Pop-up (from options.lua)
+        -- Sync the popup variable
         vim.g.show_popup = vim.b.completion
 
-        -- 3. Toggle Neovim's built-in diagnostics
+        -- Toggle Diagnostics based on the new state
         if vim.b.completion then
           vim.diagnostic.enable()
           print("Quiet Mode: OFF (Helpers ON)")
