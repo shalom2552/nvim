@@ -5,6 +5,9 @@
 -- Define a global flag to control the popup (Default: ON)
 vim.g.show_popup = true
 
+-- Disable auto formating
+vim.g.autoformat = false
+
 -- Automatically opens error details ONLY if the flag is true
 vim.api.nvim_create_autocmd("CursorHold", {
   callback = function()
