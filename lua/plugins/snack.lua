@@ -5,7 +5,7 @@ return {
 
     terminal = {
       win = {
-        height = 0.7,  -- Terminal hight 80% of screen
+        height = 0.5,  -- Terminal hight 80% of screen
       },
     },
 
