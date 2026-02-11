@@ -30,13 +30,13 @@ return {
         else
           -- TURNING OFF
           vim.diagnostic.enable(false)
-          
+
           -- This forces Neo-tree to remove the red circles immediately
           local namespaces = vim.diagnostic.get_namespaces()
           for ns_id, _ in pairs(namespaces) do
             vim.diagnostic.reset(ns_id)
           end
-          
+
           print("IDE Features: OFF")
         end
 
