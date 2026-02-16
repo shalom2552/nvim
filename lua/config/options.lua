@@ -13,6 +13,12 @@ vim.g.show_popup = true
 -- Disable auto formating
 vim.g.autoformat = false
 
+-- keep basic format for .lua files
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "lua",
+  command = "setlocal shiftwidth=2 tabstop=2 expandtab"
+})
+
 -- Automatically opens error details ONLY if the flag is true
 vim.api.nvim_create_autocmd("CursorHold", {
   callback = function()
@@ -27,5 +33,5 @@ vim.api.nvim_create_autocmd("CursorHold", {
   end,
 })
 
--- Hides the inline error messages (Keep this)
+-- Hides the inline error messages (we use popup insted)
 vim.diagnostic.config({ virtual_text = false })
