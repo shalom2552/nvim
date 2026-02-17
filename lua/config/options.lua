@@ -7,6 +7,8 @@ vim.o.expandtab = true -- Pressing the TAB key will insert spaces instead of a T
 vim.o.softtabstop = 4 -- Number of spaces inserted instead of a TAB character
 vim.o.shiftwidth = 4 -- Number of spaces inserted when indenting
 
+vim.opt.textwidth = 80 -- wrap line text at 80 caracters
+
 -- Define a global flag to control the popup (Default: ON)
 vim.g.show_popup = true
 
