@@ -69,7 +69,7 @@ return {
 
               -- Append the shell command to forcefully remove the executable if requested
               if choice == "Yes" then
-                cmd = cmd .. string.format("; rm -f %s", safe_exe)
+                cmd = cmd .. string.format("; rm -f %s $(dirname %s)/*.o", safe_exe, safe_exe)
               end
 
               -- Launch the interactive floating terminal using Snacks.nvim
