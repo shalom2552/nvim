@@ -80,6 +80,7 @@ return {
                   border = "rounded",
                   title = "  Output: " .. display_name .. " ",
                   title_pos = "center",
+                  width = 0.4,  -- output window
                 },
               })
             end)
