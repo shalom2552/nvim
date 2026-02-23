@@ -96,7 +96,7 @@ return {
             end
 
             -- 2. C++ Specific Helper: Prompt for cleanup before running
-            local function prompt_and_run(exe_path, display_name)
+            local function prompt_and_run(exe_path, display_name, clean_dir)
               vim.ui.select({ "Yes", "No" }, { prompt = "Delete executable & objects after run?" }, function(choice)
                 if not choice then return end -- Abort if user presses Esc
 
@@ -105,7 +105,8 @@ return {
 
                 -- Append cleanup commands if requested
                 if choice == "Yes" then
-                  cmd = cmd .. string.format("; rm -f %s $(dirname %s)/*.o", safe_exe, safe_exe)
+                  local safe_dir = clean_dir and vim.fn.shellescape(clean_dir) or ""
+                  cmd = cmd .. string.format("; make -C %s clean 2>/dev/null; rm -f %s $(dirname %s)/*.o", safe_dir, safe_exe, safe_exe)
                 end
 
                 launch_terminal(cmd, display_name)
@@ -120,13 +121,13 @@ return {
 
               local function execute_make()
                 vim.notify("Running make in " .. makefile_dir .. "...", vim.log.levels.INFO, { title = "C++ Runner" })
-                vim.system({ "make", "-C", makefile_dir }, { text = true }, function(obj)
+                vim.system({ "bash", "-c", "make -C " .. vim.fn.shellescape(makefile_dir) .. " clean && make -C " .. vim.fn.shellescape(makefile_dir) }, { text = true }, function(obj)
                   vim.schedule(function()
                     if obj.code ~= 0 then
                       vim.notify("Make Failed:\n" .. obj.stderr, vim.log.levels.ERROR, { title = "C++ Runner" })
                     else
                       vim.notify("Make Successful!", vim.log.levels.INFO, { title = "C++ Runner" })
-                      prompt_and_run(makefile_dir .. "/" .. target_name, target_name)
+                      prompt_and_run(makefile_dir .. "/" .. target_name, target_name, makefile_dir)
                     end
                   end)
                 end)
@@ -158,7 +159,7 @@ return {
                     vim.notify("Compilation Failed:\n" .. obj.stderr, vim.log.levels.ERROR, { title = "C++ Runner" })
                   else
                     vim.notify("Compilation Successful!", vim.log.levels.INFO, { title = "C++ Runner" })
-                    prompt_and_run(single_out_file, file_name)
+                    prompt_and_run(single_out_file, file_name, nil)
                   end
                 end)
               end)
