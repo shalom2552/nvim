@@ -19,9 +19,15 @@ vim.keymap.set("n", "<F12>", dap.step_out)
 vim.keymap.set("n", "<F9>", dap.toggle_breakpoint)
 
 -- remap notification history to <leader>N
-vim.keymap.set("n", "<leader>N", function() require("noice").cmd("history") end, { desc = "Notification History" })
+vim.keymap.set("n", "<leader>N", function()
+  if Snacks.config.picker and Snacks.config.picker.enabled then
+    Snacks.picker.notifications()
+  else
+    Snacks.notifier.show_history()
+  end
+end, { desc = "Notification History" })
 
--- Floating note window
+-- Floating window for scratch note
 vim.keymap.set("n", "<leader>n", function()
   local path = vim.fn.expand("~/.local/share/nvim/scratch.txt")
   local buf = vim.fn.bufnr(path)
