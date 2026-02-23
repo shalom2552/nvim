@@ -35,6 +35,9 @@ vim.keymap.set("n", "<leader>n", function()
     buf = vim.api.nvim_create_buf(false, false)
     vim.api.nvim_buf_set_name(buf, path)
   end
+  -- hide from bufferline tabs
+  vim.api.nvim_set_option_value("buflisted", false, { buf = buf })
+
   local win = vim.api.nvim_open_win(buf, true, {
     relative = "editor",
     width = math.floor(vim.o.columns * 0.6),
@@ -46,9 +49,14 @@ vim.keymap.set("n", "<leader>n", function()
     title_pos = "center",
   })
   vim.cmd("edit " .. path)
-  -- close with q or Esc, saves automatically
-  vim.keymap.set("n", "q", function()
+  vim.api.nvim_set_option_value("buflisted", false, { buf = buf })
+
+  local function close()
     vim.cmd("silent! write")
     vim.api.nvim_win_close(win, true)
-  end, { buffer = buf })
+  end
+
+  vim.keymap.set("n", "q", close, { buffer = buf })
+  vim.keymap.set("n", "<Esc>", close, { buffer = buf })
 end, { desc = "Scratch note (float)" })
+
