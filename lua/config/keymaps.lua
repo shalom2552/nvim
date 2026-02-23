@@ -18,3 +18,31 @@ vim.keymap.set("n", "<F11>", dap.step_into)
 vim.keymap.set("n", "<F12>", dap.step_out)
 vim.keymap.set("n", "<F9>", dap.toggle_breakpoint)
 
+-- remap notification history to <leader>N
+vim.keymap.set("n", "<leader>N", function() require("noice").cmd("history") end, { desc = "Notification History" })
+
+-- Floating note window
+vim.keymap.set("n", "<leader>n", function()
+  local path = vim.fn.expand("~/.local/share/nvim/scratch.txt")
+  local buf = vim.fn.bufnr(path)
+  if buf == -1 then
+    buf = vim.api.nvim_create_buf(false, false)
+    vim.api.nvim_buf_set_name(buf, path)
+  end
+  local win = vim.api.nvim_open_win(buf, true, {
+    relative = "editor",
+    width = math.floor(vim.o.columns * 0.6),
+    height = math.floor(vim.o.lines * 0.6),
+    col = math.floor(vim.o.columns * 0.2),
+    row = math.floor(vim.o.lines * 0.2),
+    border = "rounded",
+    title = " scratch ",
+    title_pos = "center",
+  })
+  vim.cmd("edit " .. path)
+  -- close with q or Esc, saves automatically
+  vim.keymap.set("n", "q", function()
+    vim.cmd("silent! write")
+    vim.api.nvim_win_close(win, true)
+  end, { buffer = buf })
+end, { desc = "Scratch note (float)" })
