@@ -51,7 +51,7 @@ return {
                 border = "rounded",
                 title = "  Output: " .. display_name .. " ",
                 title_pos = "center",
-                width = 0.4, -- Adjust width as needed
+                width = 0.6, -- Adjust width as needed
               },
             })
           end
