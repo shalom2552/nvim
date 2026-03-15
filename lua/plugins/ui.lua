@@ -8,4 +8,18 @@ return {
       opts.options.component_separators = { left = "│", right = "│" }
     end,
   },
+
+  -- Enable text wrapping in the Snacks picker preview window.
+  {
+    "folke/snacks.nvim",
+    opts = {
+      picker = {
+        win = {
+          preview = {
+            wo = { wrap = true }
+          }
+        }
+      }
+    }
+  },
 }
