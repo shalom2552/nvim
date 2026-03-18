@@ -120,13 +120,13 @@ return {
               local target_name = _G.cpp_runner_targets[makefile_path]
 
               local function execute_make()
-                vim.notify("Running make in " .. makefile_dir .. "...", vim.log.levels.INFO, { title = "C++ Runner" })
+                vim.notify("Running make in " .. makefile_dir .. "...", vim.log.levels.INFO, { title = "Code Runner" })
                 vim.system({ "bash", "-c", "make -C " .. vim.fn.shellescape(makefile_dir) .. " clean && make -C " .. vim.fn.shellescape(makefile_dir) }, { text = true }, function(obj)
                   vim.schedule(function()
                     if obj.code ~= 0 then
-                      vim.notify("Make Failed:\n" .. obj.stderr, vim.log.levels.ERROR, { title = "C++ Runner" })
+                      vim.notify("Make Failed:\n" .. obj.stderr, vim.log.levels.ERROR, { title = "Code Runner" })
                     else
-                      vim.notify("Make Successful!", vim.log.levels.INFO, { title = "C++ Runner" })
+                      vim.notify("Make Successful!", vim.log.levels.INFO, { title = "Code Runner" })
                       prompt_and_run(makefile_dir .. "/" .. target_name, target_name, makefile_dir)
                     end
                   end)
@@ -141,7 +141,7 @@ return {
                     target_name = input
                     execute_make()
                   else
-                    vim.notify("Compilation cancelled. No target specified.", vim.log.levels.WARN, { title = "C++ Runner" })
+                    vim.notify("Compilation cancelled. No target specified.", vim.log.levels.WARN, { title = "Code Runner" })
                   end
                 end)
               else
@@ -152,13 +152,13 @@ return {
               -- Branch B: No Makefile, fallback to single file g++ compilation
               local compiler = (filetype == "cpp") and "g++" or "gcc"
 
-              vim.notify("Compiling " .. file_name .. "...", vim.log.levels.INFO, { title = "C++ Runner" })
+              vim.notify("Compiling " .. file_name .. "...", vim.log.levels.INFO, { title = "Code Runner" })
               vim.system({ compiler, "-g", file_path, "-o", single_out_file }, { text = true }, function(obj)
                 vim.schedule(function()
                   if obj.code ~= 0 then
-                    vim.notify("Compilation Failed:\n" .. obj.stderr, vim.log.levels.ERROR, { title = "C++ Runner" })
+                    vim.notify("Compilation Failed:\n" .. obj.stderr, vim.log.levels.ERROR, { title = "Code Runner" })
                   else
-                    vim.notify("Compilation Successful!", vim.log.levels.INFO, { title = "C++ Runner" })
+                    vim.notify("Compilation Successful!", vim.log.levels.INFO, { title = "Code Runner" })
                     prompt_and_run(single_out_file, file_name, nil)
                   end
                 end)
