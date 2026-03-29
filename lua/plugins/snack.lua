@@ -1,25 +1,39 @@
--- lua/plugins/snacks.nvim
 return {
   "folke/snacks.nvim",
   opts = {
 
-    terminal = {
-      win = {
-        position = "right",
-        width = 0.3,  -- Terminal width % of screen
+    styles = {
+
+      -- Lazygit in a floating window
+      lazygit = {
+        position = "float",
+        width = 0.7,
+        border = "rounded",
       },
+
+      -- Terminals on the right
+      terminal = {
+        position = "right",
+        width = 0.3,
+      },
+
     },
 
     picker = {
-      -- Global setting (acts as a default)
+      -- Show hidden files in picker
       hidden = true,
       sources = {
-        -- Specific override for the 'Find Files' command
-        files = { hidden = true },
+        files = {
+          -- Show hidden files in 'find files'
+          hidden = true,
+        },
       },
     },
+
     explorer = {
+      -- Show hidden files in explorer
       hidden = true,
     },
+
   },
 }
