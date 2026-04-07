@@ -16,7 +16,7 @@ The reliable way to get the latest stable release is using the AppImage:
 sudo apt remove neovim -y
 
 # 2. Download the latest AppImage
-curl -LO [https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.appimage](https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.appimage)
+curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.appimage
 
 # 3. Make it executable
 chmod u+x nvim-linux-x86_64.appimage
