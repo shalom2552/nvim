@@ -24,7 +24,7 @@ local function execute_code(force_single)
         title = "  Output: " .. display_name .. " ",
         title_pos = "center",
         width = 0.5, -- Terminal output width
-        height = 0.6, -- Terminal output hight
+        height = 0.8, -- Terminal output hight
       },
     })
   end
