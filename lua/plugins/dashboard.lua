@@ -2,6 +2,7 @@ return {
   {
     "nvimdev/dashboard-nvim",
     event = "VimEnter",
+    dependencies = { "ibhagwan/fzf-lua" },
     opts = function(_, opts)
       local logo = [[
 ██╗  ██╗         ██╗    ██╗  ██╗    ██╗     
@@ -11,12 +12,32 @@ return {
 ██║  ██║    ╚█████╔╝    ██║  ██╗    ███████╗
 ╚═╝  ╚═╝     ╚════╝     ╚═╝  ╚═╝    ╚══════╝
       ]]
-
-      -- This adds some spacing above and below the logo
       logo = string.rep("\n", 8) .. logo .. "\n\n"
       opts.config.header = vim.split(logo, "\n")
 
-      -- footer
+      -- Inject custom directory picker into dashboard entries
+      table.insert(opts.config.center, 4, {
+        action = function()
+          require("fzf-lua").fzf_exec("fd --type d --hidden --exclude .git", {
+            prompt = "Select Directory> ",
+            cwd = vim.fn.expand("~"),
+            actions = {
+              ["default"] = function(selected)
+                if selected and #selected > 0 then
+                  local target_dir = vim.fn.expand("~") .. "/" .. selected[1]
+                  vim.api.nvim_set_current_dir(target_dir)
+                  vim.cmd("edit " .. target_dir)
+                end
+              end
+            }
+          })
+        end,
+        desc = " Select Directory",
+        icon = " ",
+        key = "d",
+        key_format = "  %s",
+      })
+
       opts.config.footer = function()
         local quotes = {
           "exit vim? never heard of it.",
