@@ -4,9 +4,7 @@ return {
   opts = {
     on_highlights = function(hl, c)
       -- override the split separator to be more visible
-      hl.WinSeparator = {
-        fg = c.blue,
-      }
+      hl.WinSeparator = { fg = c.blue }
     end,
   },
 }
