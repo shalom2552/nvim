@@ -15,21 +15,33 @@ return {
       logo = string.rep("\n", 8) .. logo .. "\n\n"
       opts.config.header = vim.split(logo, "\n")
 
-      -- Inject custom directory picker into dashboard entries
+      -- Add directory picker to dashboard entries
       table.insert(opts.config.center, 4, {
         action = function()
-          require("fzf-lua").fzf_exec("fd --type d --hidden --exclude .git", {
-            prompt = "Select Directory> ",
-            cwd = vim.fn.expand("~"),
-            actions = {
-              ["default"] = function(selected)
-                if selected and #selected > 0 then
-                  local target_dir = vim.fn.expand("~") .. "/" .. selected[1]
-                  vim.api.nvim_set_current_dir(target_dir)
-                  vim.cmd("edit " .. target_dir)
-                end
-              end
-            }
+          local home = vim.fn.expand("~")
+          Snacks.picker({
+            title = "Select Directory",
+            cwd = home,
+            format = "file",
+            finder = function(_, ctx)
+              return require("snacks.picker.source.proc").proc(ctx:opts({
+                cmd = "fd",
+                args = { "--type", "d", "--hidden", "--exclude", ".git" },
+                transform = function(item)
+                  item.cwd = home
+                  item.file = item.text
+                  item.dir = true
+                end,
+              }), ctx)
+            end,
+            confirm = function(picker, item)
+              picker:close()
+              if not item or not item.file then return end
+              local dir = item.file:match("^/") and item.file or (home .. "/" .. item.file)
+              vim.cmd("cd " .. vim.fn.fnameescape(dir))
+              vim.cmd("enew")
+              Snacks.explorer()
+            end,
           })
         end,
         desc = " Select Directory",
@@ -38,6 +50,7 @@ return {
         key_format = "  %s",
       })
 
+      -- Footer
       opts.config.footer = function()
         local quotes = {
           "exit vim? never heard of it.",
