@@ -4,7 +4,14 @@ return {
   lazy = false,
 
   keys = {
-    { "<leader>ut", "<cmd>TransparentToggle<CR>", desc = "Toggle Transparency" },
+    { "<leader>ut",
+      function ()
+        vim.cmd("TransparentToggle")
+        local enabled = vim.g.transparent_enabled
+        print("Transparency: " .. (enabled and "ON" or "OFF"))
+      end,
+      desc = "Toggle Transparency"
+    },
   },
 
   opts = {
