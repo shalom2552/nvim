@@ -16,7 +16,7 @@ return {
       opts.config.header = vim.split(logo, "\n")
 
       -- Add directory picker to dashboard entries
-      table.insert(opts.config.center, 4, {
+table.insert(opts.config.center, 4, {
         action = function()
           local home = vim.fn.expand("~")
           Snacks.picker({
@@ -26,11 +26,27 @@ return {
             finder = function(_, ctx)
               return require("snacks.picker.source.proc").proc(ctx:opts({
                 cmd = "fd",
-                args = { "--type", "d", "--hidden", "--exclude", ".git" },
+                args = {
+                  "--type", "d",
+                  "--hidden",
+                  "--ignore-case",
+                  "--exclude", ".git",
+                  "--exclude", "node_modules",
+                  "--exclude", ".venv",
+                  "--exclude", "venv",
+                  "--exclude", "target",
+                  "--exclude", "build",
+                  "--exclude", "dist",
+                  "."  -- search from cwd (home)
+                },
                 transform = function(item)
                   item.cwd = home
                   item.file = item.text
                   item.dir = true
+
+                  -- Boost score for non-hidden directories so they appear first
+                  local is_hidden = item.text:match("^%.") or item.text:match("/%.")
+                  item.score = is_hidden and 1 or 100
                 end,
               }), ctx)
             end,
