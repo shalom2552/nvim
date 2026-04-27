@@ -2,11 +2,24 @@ return {
   {
     "neovim/nvim-lspconfig",
     opts = {
+
       diagnostics = {
-        virtual_text = false, -- Keep inline errors OFF (as you requested)
+        virtual_text = false, -- Keep inline errors OFF
 
       },
+
+
       servers = {
+        ["*"] = {
+          capabilities = {
+            workspace = {
+              didChangeWatchedFiles = {
+                dynamicRegistration = true, -- File watching - auto-detect external file changes
+              },
+            },
+          },
+        },
+
         clangd = {
           cmd = {
             "clangd",
