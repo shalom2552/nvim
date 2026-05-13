@@ -15,6 +15,11 @@ return {
       -- Brighter comments color
       hl.Comment = { fg = "#8a95b0", italic = true }
 
+      -- Green/red diff colors
+      hl.DiffAdd    = { bg = "#1a3a2a" }
+      hl.DiffDelete = { bg = "#3a1a22" }
+      hl.DiffChange = { bg = "#1a2a3a" }
+      hl.DiffText   = { bg = "#2a4a3a", bold = true }
     end,
   },
 }
