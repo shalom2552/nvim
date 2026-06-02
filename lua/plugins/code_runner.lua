@@ -23,7 +23,7 @@ local function execute_code(force_single)
         border = "rounded",
         title = "  Output: " .. display_name .. " ",
         title_pos = "center",
-        width = 0.5, -- Terminal output width
+        width = 0.7, -- Terminal output width
         height = 0.8, -- Terminal output hight
       },
     })

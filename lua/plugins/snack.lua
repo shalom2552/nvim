@@ -14,7 +14,7 @@ return {
       -- Terminals on the right
       terminal = {
         position = "right",
-        width = 0.3,
+        width = 0.35,
       },
 
     },
