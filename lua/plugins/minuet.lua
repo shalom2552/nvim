@@ -4,6 +4,20 @@ return {
     init = function()
         vim.keymap.set("n", "<leader>at", "<cmd>Minuet virtualtext toggle<cr>", { desc = "Toggle Minuet" })
     end,
+    -- Use Tab fallback to regular tab
+    config = function(_, opts)
+        require("minuet").setup(opts)
+        vim.keymap.set("i", "<Tab>", function()
+
+            local vt = require("minuet.virtualtext")
+            -- Use the official nested API table
+            if vt.action.is_visible() then
+                vt.action.accept()
+            else
+                vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Tab>", true, false, true), "n", false)
+            end
+        end, { desc = "Accept Minuet or regular Tab" })
+    end,
     opts = {
         provider = "openai_fim_compatible",
         n_completions = 1,
