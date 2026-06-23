@@ -29,7 +29,7 @@ return {
             openai_fim_compatible = {
                 api_key = "TERM",
                 name = "Ollama",
-                end_point = "http://localhost:11434/v1/completions",
+                end_point = (os.getenv("OLLAMA_BASE_URL") or "http://localhost:11434") .. "/v1/completions",
                 model = os.getenv("OLLAMA_MODEL") or "qwen2.5-coder:1.5b",
                 stream = true,
                 optional = {
