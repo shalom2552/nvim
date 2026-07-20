@@ -45,15 +45,19 @@ local function execute_code(force_single)
         ----------------------------------------------------------------------
         -- PYTHON RUNNER
         ----------------------------------------------------------------------
-        vim.notify("Running " .. file_name .. "...", vim.log.levels.INFO, { title = "Python Runner" })
-        local safe_file = vim.fn.shellescape(file_path)
-        local cmd = string.format("python3 %s; echo ''; read -p 'Press Enter to close...'", safe_file)
+        local venv = vim.fn.findfile(".venv/bin/python", current_dir .. ";")
+        if venv == "" then venv = vim.fn.findfile("venv/bin/python", current_dir .. ";") end
+        local bin = venv ~= "" and vim.fn.fnamemodify(venv, ":p") or "python"
+
+        vim.notify("Running " .. file_name .. (bin ~= "python" and " (.venv)" or ""), 2, { title = "Python Runner" })
+        local cmd = string.format("%s %s; echo ''; read -p 'Press Enter to close...'", bin, vim.fn.shellescape(file_path))
         launch_terminal(cmd, file_name)
 
     elseif filetype == "sh" then
         ----------------------------------------------------------------------
         -- BASH RUNNER
         ----------------------------------------------------------------------
+        vim.notify("Running " .. file_name .. "...", vim.log.levels.INFO, { title = "Bash Runner" })
         local safe_file = vim.fn.shellescape(file_path)
         local cmd = string.format("bash %s; echo ''; read -p 'Press Enter to close...'", safe_file)
         launch_terminal(cmd, file_name)
