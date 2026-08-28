@@ -3,6 +3,10 @@
 -- Add any additional keymaps here
 
 
+-- Core keybinds
+vim.keymap.set("n", "<C-u>", "<C-u>zz")
+vim.keymap.set("n", "<C-d>", "<C-d>zz")
+
 -- jj exits insert mode AND cancels any active LuaSnip session (prevents <Tab> hijack)
 vim.keymap.set("i", "jj", function()
   local ok, ls = pcall(require, "luasnip")
@@ -18,12 +22,4 @@ vim.keymap.set("n", "<F11>", dap.step_into)
 vim.keymap.set("n", "<F12>", dap.step_out)
 vim.keymap.set("n", "<F9>", dap.toggle_breakpoint)
 
--- remap notification history to <leader>N
-vim.keymap.set("n", "<leader>N", function()
-  if Snacks.config.picker and Snacks.config.picker.enabled then
-    Snacks.picker.notifications()
-  else
-    Snacks.notifier.show_history()
-  end
-end, { desc = "Notification History" })
 
