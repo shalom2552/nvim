@@ -8,7 +8,6 @@ return {
 
       },
 
-
       servers = {
         ["*"] = {
           capabilities = {
@@ -24,10 +23,14 @@ return {
           cmd = {
             "clangd",
             "--background-index",
+            "--background-index-priority=normal",
             "--clang-tidy",
-            "--query-driver=/usr/bin/g++,/usr/bin/gcc,**", -- Whitelist g++
+            "--completion-style=detailed",
+            "--query-driver=**",
+            "--log=error",
           },
         },
+
         lua_ls = {
           settings = {
             Lua = {
@@ -35,6 +38,7 @@ return {
             },
           },
         },
+
       },
     },
   },

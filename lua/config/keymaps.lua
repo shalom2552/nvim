@@ -14,6 +14,9 @@ vim.keymap.set("i", "jj", function()
   return "<Esc>"
 end, { expr = true, silent = true, desc = "Exit insert + stop snippet" })
 
+-- fills the quickfix list that <leader>xq and <leader>xQ read
+vim.keymap.set("n", "<leader>xd", vim.diagnostic.setqflist, { desc = "Diagnostics to Quickfix" })
+
 -- dap debugger standard F-keys
 local dap = require("dap")
 vim.keymap.set("n", "<F5>", dap.continue)
