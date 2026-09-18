@@ -2,26 +2,20 @@
 vim.opt_local.statuscolumn = ""
 vim.opt_local.textwidth = 0
 
+-- keep the page loaded, because going back cannot re-read a shortened name
+local buf = vim.api.nvim_get_current_buf()
+vim.schedule(function()
+  pcall(vim.api.nvim_set_option_value, "bufhidden", "hide", { buf = buf })
+end)
+
 -- Handle cpp ref links follow
 local function follow()
-  local page = vim.api.nvim_buf_get_name(0):match("^man://(std::[^(]+)%(")
-  if page then
-    local class = page:match("^std::[%w_]+")
-    local seen = {}
-    for _, word in ipairs({ vim.fn.expand("<cWORD>"), vim.fn.expand("<cword>") }) do
-      for _, name in ipairs({ class .. "::" .. word, "std::" .. word }) do
-        if not seen[name] then
-          seen[name] = true
-          vim.fn.system({ "man", "-w", name })
-          if vim.v.shell_error == 0 then
-            vim.cmd("Man " .. vim.fn.fnameescape(name))
-            return
-          end
-        end
-      end
-    end
+  if require("config.cppman").follow() then return end
+  -- plain man pages, where :Man reports a bad word instead of throwing
+  local err = require("man").open_page(-1, { tab = -1 }, {})
+  if err then
+    vim.notify("man.lua: " .. err, vim.log.levels.ERROR)
   end
-  vim.api.nvim_feedkeys(vim.keycode("<C-]>"), "n", false)
 end
 
 vim.keymap.set("n", "<CR>",          follow, { buffer = true, desc = "Follow man reference" })
