@@ -11,10 +11,11 @@ return {
         border = "rounded",
       },
 
-      -- Terminals on the right
+      -- Floating terminal window
       terminal = {
-        position = "right",
-        width = 0.35,
+        position = "float",
+        width = 0.7,
+        border = "rounded",
       },
 
     },
