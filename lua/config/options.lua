@@ -9,6 +9,12 @@ vim.o.shiftwidth = 4 -- Number of spaces inserted when indenting
 
 vim.opt.textwidth = 80 -- wrap line text at 80 caracters
 
+-- LazyVim uses system clipboard by default (unnamedplus), but it breakes on ssh since
+-- LazyVim disables clipboard when SSH_CONNECTION is set, which tmux leaks into local windows,
+-- so we override it to use unnamedplus on tmux even on SSH_TTY.
+-- discussion: https://github.com/LazyVim/LazyVim/discussions/4602
+if vim.env.TMUX then vim.opt.clipboard = "unnamedplus" end
+
 -- Define a global flag to control the popup (Default: ON)
 vim.g.show_popup = true
 
