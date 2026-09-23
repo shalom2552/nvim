@@ -28,6 +28,7 @@ return {
             "--completion-style=detailed",
             "--query-driver=**",
             "--log=error",
+            "--fallback-style=webkit",
           },
         },
 
