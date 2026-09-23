@@ -3,32 +3,34 @@ return {
   "mfussenegger/nvim-dap",
   opts = function()
     local dap = require("dap")
-    -- Ensure cpp configurations table exists
-    dap.configurations.cpp = dap.configurations.cpp or {}
 
-    -- Insert custom configuration at the top (index 1)
-    table.insert(dap.configurations.cpp, 1, {
+    -- Telescope picker for executables
+    local telescope_launch = {
       name = "Launch with Telescope",
       type = "codelldb",
       request = "launch",
       cwd = "${workspaceFolder}",
-
-      -- Use a function to dynamically determine the program path
       program = function()
-        -- Coroutine prevents blocking the Neovim UI while waiting for user input
         return coroutine.create(function(coro)
-          -- Find all executable files in the current directory and subdirectories
-          local executables = vim.fn.systemlist("find . -type f -executable")
-
-          -- Trigger dressing.nvim (Telescope UI) to queue and show the selection prompt
+          local executables = vim.fn.systemlist(
+            "find . -type f -executable -not -path '*/.*' -printf '%T@ %P\\n' | sort -rn | cut -d' ' -f2-"
+          )
+          if #executables == 0 then
+            vim.notify("No executables found", vim.log.levels.WARN)
+            coroutine.resume(coro, dap.ABORT)
+            return
+          end
           vim.ui.select(executables, { prompt = "Select executable:" }, function(choice)
-            if choice then
-              -- Remove './' prefix and resume the debugger coroutine with the absolute path
-              coroutine.resume(coro, vim.fn.getcwd() .. "/" .. choice:gsub("^%./", ""))
-            end
+            coroutine.resume(coro, choice and (vim.fn.getcwd() .. "/" .. choice) or dap.ABORT)
           end)
         end)
       end,
-    })
-  end
+    }
+
+    -- Add the Telescope picker option to executable langs
+    for _, lang in ipairs({ "c", "cpp", "rust", "zig" }) do
+      dap.configurations[lang] = dap.configurations[lang] or {}
+      table.insert(dap.configurations[lang], 1, telescope_launch)
+    end
+  end,
 }
