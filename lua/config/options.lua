@@ -35,5 +35,11 @@ vim.api.nvim_create_autocmd("CursorHold", {
   end,
 })
 
+-- Enable termdebug if gdb is installed
+if vim.fn.executable("gdb") == 1 then
+  vim.cmd("packadd! termdebug")
+end
+
 -- Hides the inline error messages (we use popup insted)
 vim.diagnostic.config({ virtual_text = false })
+

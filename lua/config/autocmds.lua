@@ -1,6 +1,14 @@
 -- Autocmds are automatically loaded on the VeryLazy event
 -- Default autocmds that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/autocmds.lua
 
+-- Termdebug: run program in gdb's terminal to avoid "Failed to set controlling terminal" warning
+vim.api.nvim_create_autocmd("User", {
+  pattern = "TermdebugStartPost",
+  callback = function()
+    vim.fn.TermDebugSendCommand("set inferior-tty")
+  end,
+})
+
 -- skipped when walking a non-git tree
 local WALK_SKIP = {
     [".git"] = true,
@@ -13,8 +21,8 @@ local WALK_SKIP = {
     ["venv"] = true,
 }
 
+-- helper function for lsp_load_workspace()
 local opened = {}
-
 local function workspace_files(root)
     local ls = vim.system({ "git", "-C", root, "ls-files" }, { text = true }):wait()
     local files = {}
