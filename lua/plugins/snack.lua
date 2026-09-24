@@ -1,40 +1,41 @@
 return {
-  "folke/snacks.nvim",
-  opts = {
+    "folke/snacks.nvim",
+    opts = {
 
-    styles = {
+        styles = {
 
-      -- Lazygit in a floating window
-      lazygit = {
-        position = "float",
-        width = 0.7,
-        border = "rounded",
-      },
+            -- Add border to floating windows
+            float = { border = true },
 
-      -- Floating terminal window
-      terminal = {
-        position = "float",
-        width = 0.7,
-        border = "rounded",
-      },
+            -- Lazygit in a floating window
+            lazygit = {
+                position = "float",
+                width = 0.7,
+            },
 
-    },
+            -- Floating terminal window
+            terminal = {
+                position = "float",
+                width = 0.7,
+            },
 
-    picker = {
-      -- Show hidden files in picker
-      hidden = true,
-      sources = {
-        files = {
-          -- Show hidden files in 'find files'
-          hidden = true,
         },
-      },
-    },
 
-    explorer = {
-      -- Show hidden files in explorer
-      hidden = true,
-    },
+        picker = {
+            -- Show hidden files in picker
+            hidden = true,
+            sources = {
+                files = {
+                    -- Show hidden files in 'find files'
+                    hidden = true,
+                },
+            },
+        },
 
-  },
+        explorer = {
+            -- Show hidden files in explorer
+            hidden = true,
+        },
+
+    },
 }
