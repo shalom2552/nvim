@@ -5,8 +5,6 @@ My personal configuration built on the [LazyVim Starter Template](https://github
 ## Custom Plugins
 
 - **Code Runner** — Execute C, C++, Python and other files directly from the editor. Automatically detects and uses Makefiles when present.
-- **Transparent** — Toggle transparency for all UI elements with visual notification on change.
-- **IDE Toggle** — Strip down the editor to a minimal state by disabling all IDE features — useful for algorithm practice.
 - **Dashboard** — Custom start screen with HJKL navigation and an integrated directory picker powered by fzf.
 - **Tmux Navigator** — Seamless pane navigation between Neovim and tmux using `Ctrl+hjkl`.
 

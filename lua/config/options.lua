@@ -15,17 +15,13 @@ vim.opt.textwidth = 80 -- wrap line text at 80 caracters
 -- discussion: https://github.com/LazyVim/LazyVim/discussions/4602
 if vim.env.TMUX then vim.opt.clipboard = "unnamedplus" end
 
--- Define a global flag to control the popup (Default: ON)
-vim.g.show_popup = true
-
 -- Disable auto formating
 vim.g.autoformat = false
 
--- Automatically opens error details ONLY if the flag is true
+-- Automatically opens error details when diagnostics are enabled
 vim.api.nvim_create_autocmd("CursorHold", {
   callback = function()
-    -- Check our flag and ensure diagnostics are enabled globally
-    if vim.g.show_popup and vim.diagnostic.is_enabled() then
+    if vim.diagnostic.is_enabled() then
       vim.diagnostic.open_float(nil, {
         focus = false,
         scope = "cursor",
