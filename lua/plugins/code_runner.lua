@@ -33,18 +33,18 @@ local function execute_code(force_single)
     -- ROUTER: Execute based on filetype
     -- =====================================================================
 
+    ----------------------------------------------------------------------
+    -- JAVASCRIPT RUNNER
+    ----------------------------------------------------------------------
     if filetype == "javascript" then
-        ----------------------------------------------------------------------
-        -- JAVASCRIPT RUNNER
-        ----------------------------------------------------------------------
         vim.notify("Running " .. file_name .. "...", vim.log.levels.INFO, { title = "javascript Runner" })
         local cmd = string.format("node .; echo ''; read -p 'Press Enter to close...'")
         launch_terminal(cmd, file_name)
 
+    ----------------------------------------------------------------------
+    -- PYTHON RUNNER
+    ----------------------------------------------------------------------
     elseif filetype == "python" then
-        ----------------------------------------------------------------------
-        -- PYTHON RUNNER
-        ----------------------------------------------------------------------
         local venv = vim.fn.findfile(".venv/bin/python", current_dir .. ";")
         if venv == "" then venv = vim.fn.findfile("venv/bin/python", current_dir .. ";") end
         local bin = venv ~= "" and vim.fn.fnamemodify(venv, ":p") or "python"
@@ -53,19 +53,19 @@ local function execute_code(force_single)
         local cmd = string.format("%s %s; echo ''; read -p 'Press Enter to close...'", bin, vim.fn.shellescape(file_path))
         launch_terminal(cmd, file_name)
 
+    ----------------------------------------------------------------------
+    -- BASH RUNNER
+    ----------------------------------------------------------------------
     elseif filetype == "sh" then
-        ----------------------------------------------------------------------
-        -- BASH RUNNER
-        ----------------------------------------------------------------------
         vim.notify("Running " .. file_name .. "...", vim.log.levels.INFO, { title = "Bash Runner" })
         local safe_file = vim.fn.shellescape(file_path)
         local cmd = string.format("bash %s; echo ''; read -p 'Press Enter to close...'", safe_file)
         launch_terminal(cmd, file_name)
 
-    elseif filetype == "cpp" or filetype == "c" then
-        ----------------------------------------------------------------------
-        -- C/C++ RUNNER
-        ----------------------------------------------------------------------
+    ----------------------------------------------------------------------
+    -- RUST/C/C++ RUNNER
+    ----------------------------------------------------------------------
+    elseif filetype == "cpp" or filetype == "c" or filetype == "rust" then
         local parent_dir = vim.fn.fnamemodify(current_dir, ":h")
         local single_out_file = vim.fn.expand("%:p:r")
         local makefile_dir = nil
@@ -138,7 +138,7 @@ local function execute_code(force_single)
 
         else
             -- Branch B: No Makefile OR user explicitly forced single-file mode
-            local compiler = (filetype == "cpp") and "g++" or "gcc"
+            local compiler = (filetype == "cpp") and "g++" or (filetype == "c") and "gcc" or "rustc"
 
             vim.notify("Compiling single file: " .. file_name .. "...", vim.log.levels.INFO, { title = "Code Runner" })
             vim.system({ compiler, "-g", file_path, "-o", single_out_file }, { text = true }, function(obj)
@@ -164,6 +164,9 @@ end
 -- =====================================================================
 -- PLUGIN REGISTRATION & KEYMAPS
 -- =====================================================================
+
+vim.api.nvim_create_user_command("Run", function(o) execute_code(o.bang) end, { bang = true })
+
 return {
     -- 1. Configure the Notifier UI
     {
