@@ -3,10 +3,6 @@
 -- Add any additional keymaps here
 
 
--- Core keybinds
-vim.keymap.set("n", "<C-u>", "<C-u>zz")
-vim.keymap.set("n", "<C-d>", "<C-d>zz")
-
 -- jj exits insert mode AND cancels any active LuaSnip session (prevents <Tab> hijack)
 vim.keymap.set("i", "jj", function()
   local ok, ls = pcall(require, "luasnip")
