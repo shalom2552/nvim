@@ -42,13 +42,13 @@ return {
                         "<|fim_middle|>",
                         "<|fim_suffix|>",
                         "<|fim_pad|>",
-                        "\n\n", -- Stops generation at double blank lines
+                        -- "\n\n", -- Stops generation at double blank lines
                     },
                 },
             },
         },
         virtualtext = {
-            auto_trigger_ft = {"*"},
+            auto_trigger_ft = {},
             keymap = {
                 accept = "<A-y>",
                 accept_line = "<A-a>",
