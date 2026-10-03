@@ -20,7 +20,6 @@ local function execute_code(force_single)
             interactive = true,
             win = {
                 position = "float",
-                border = "rounded",
                 title = "  Output: " .. display_name .. " ",
                 title_pos = "center",
                 width = 0.7, -- Terminal output width

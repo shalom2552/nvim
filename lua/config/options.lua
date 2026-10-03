@@ -9,6 +9,8 @@ vim.o.shiftwidth = 4 -- Number of spaces inserted when indenting
 
 vim.opt.textwidth = 80 -- wrap line text at 80 caracters
 
+vim.o.winborder = "rounded" -- default border for all floating windows
+
 -- LazyVim uses system clipboard by default (unnamedplus), but it breakes on ssh since
 -- LazyVim disables clipboard when SSH_CONNECTION is set, which tmux leaks into local windows,
 -- so we override it to use unnamedplus on tmux even on SSH_TTY.
@@ -25,7 +27,6 @@ vim.api.nvim_create_autocmd("CursorHold", {
       vim.diagnostic.open_float(nil, {
         focus = false,
         scope = "cursor",
-        border = "rounded",
       })
     end
   end,

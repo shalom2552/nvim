@@ -1,4 +1,4 @@
--- Sets rounded borders and blue highlights for blink.cmp windows
+-- Auto-show blink.cmp documentation popup
 return {
     {
         "saghen/blink.cmp",
@@ -8,15 +8,9 @@ return {
             -- Merge settings safely to force the override
             opts.completion = vim.tbl_deep_extend("force", opts.completion or {}, {
 
-                -- Main completion menu styling
-                menu = {
-                    border = "rounded",
-                },
-
-                -- Documentation popup styling
+                -- Documentation popup
                 documentation = {
                     auto_show = true,
-                    window = { border = "rounded", },
                 },
 
             })
