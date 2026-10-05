@@ -36,6 +36,11 @@ return {
                 width = 0.7,
             },
 
+            -- Center input prompts
+            input = {
+                row = function() return math.floor((vim.o.lines - 3) / 2) end,
+            },
+
         },
 
         picker = {
