@@ -18,6 +18,7 @@ return {
                 -- },
                 split = { size = "30%" },
                 popup = { size = { width = "70%", height = "60%" } },
+                cmdline_input = { position = { row = "95%", col = "50%" } }, -- input prompts
             })
 
             -- Noice routes: where each message routes to
