@@ -13,6 +13,10 @@ return {
                     auto_show = true,
                 },
 
+                menu = {
+                    max_height = 20,
+                },
+
             })
 
         end,
