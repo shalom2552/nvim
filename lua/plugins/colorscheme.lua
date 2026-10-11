@@ -9,6 +9,8 @@ return {
         "catppuccin/nvim",
         name = "catppuccin",
         opts = {
+            transparent_background = true,
+            float = { transparent = true },
             custom_highlights = function(c)
                 return {
                     BlinkCmpScrollBarThumb = { bg = c.blue }, -- scrollbar color
