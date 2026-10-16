@@ -1,5 +1,17 @@
 -- Global cache to store C++ executable names per Makefile path
 _G.cpp_runner_targets = _G.cpp_runner_targets or {}
+-- Session caches: run args per target, delete-after-run answer
+_G.code_runner_args = _G.code_runner_args or {}
+_G.code_runner_cleanup = _G.code_runner_cleanup
+
+-- Prompt for run args, prefilled with last value for this key
+local function ask_args(key, name, cb)
+    vim.ui.input({ prompt = "Run " .. name .. " with args (Enter = none): ", default = _G.code_runner_args[key] or "" }, function(input)
+        if input == nil then return end -- Abort if user presses Esc
+        _G.code_runner_args[key] = input
+        cb(input)
+    end)
+end
 
 -- Core execution logic extracted so we can pass a "force_single" flag
 local function execute_code(force_single)
@@ -36,9 +48,11 @@ local function execute_code(force_single)
     -- JAVASCRIPT RUNNER
     ----------------------------------------------------------------------
     if filetype == "javascript" then
-        vim.notify("Running " .. file_name .. "...", vim.log.levels.INFO, { title = "javascript Runner" })
-        local cmd = string.format("node .; echo ''; read -p 'Press Enter to close...'")
-        launch_terminal(cmd, file_name)
+        ask_args(file_path, file_name, function(args)
+            vim.notify("Running " .. file_name .. "...", vim.log.levels.INFO, { title = "javascript Runner" })
+            local cmd = string.format("node . %s; echo ''; read -p 'Press Enter to close...'", args)
+            launch_terminal(cmd, file_name)
+        end)
 
     ----------------------------------------------------------------------
     -- PYTHON RUNNER
@@ -48,18 +62,22 @@ local function execute_code(force_single)
         if venv == "" then venv = vim.fn.findfile("venv/bin/python", current_dir .. ";") end
         local bin = venv ~= "" and vim.fn.fnamemodify(venv, ":p") or "python"
 
-        vim.notify("Running " .. file_name .. (bin ~= "python" and " (.venv)" or ""), 2, { title = "Python Runner" })
-        local cmd = string.format("%s %s; echo ''; read -p 'Press Enter to close...'", bin, vim.fn.shellescape(file_path))
-        launch_terminal(cmd, file_name)
+        ask_args(file_path, file_name, function(args)
+            vim.notify("Running " .. file_name .. (bin ~= "python" and " (.venv)" or ""), 2, { title = "Python Runner" })
+            local cmd = string.format("%s %s %s; echo ''; read -p 'Press Enter to close...'", bin, vim.fn.shellescape(file_path), args)
+            launch_terminal(cmd, file_name)
+        end)
 
     ----------------------------------------------------------------------
     -- BASH RUNNER
     ----------------------------------------------------------------------
     elseif filetype == "sh" then
-        vim.notify("Running " .. file_name .. "...", vim.log.levels.INFO, { title = "Bash Runner" })
-        local safe_file = vim.fn.shellescape(file_path)
-        local cmd = string.format("bash %s; echo ''; read -p 'Press Enter to close...'", safe_file)
-        launch_terminal(cmd, file_name)
+        ask_args(file_path, file_name, function(args)
+            vim.notify("Running " .. file_name .. "...", vim.log.levels.INFO, { title = "Bash Runner" })
+            local safe_file = vim.fn.shellescape(file_path)
+            local cmd = string.format("bash %s %s; echo ''; read -p 'Press Enter to close...'", safe_file, args)
+            launch_terminal(cmd, file_name)
+        end)
 
     ----------------------------------------------------------------------
     -- RUST/C/C++ RUNNER
@@ -79,12 +97,10 @@ local function execute_code(force_single)
         end
 
         -- 2. C++ Specific Helper: Prompt for cleanup before running
-        local function prompt_and_run(exe_path, display_name, clean_dir)
-            vim.ui.select({ "Yes", "No" }, { prompt = "Delete executable & objects after run?" }, function(choice)
-                if not choice then return end -- Abort if user presses Esc
-
+        local function prompt_and_run(exe_path, display_name, clean_dir, args)
+            local function run(choice)
                 local safe_exe = vim.fn.shellescape(exe_path)
-                local cmd = string.format("%s; echo ''; read -p 'Press Enter to close...'", safe_exe)
+                local cmd = string.format("%s %s; echo ''; read -p 'Press Enter to close...'", safe_exe, args)
 
                 -- Append cleanup commands if requested (Bug Fix: safely check if clean_dir exists)
                 if choice == "Yes" then
@@ -97,6 +113,16 @@ local function execute_code(force_single)
                 end
 
                 launch_terminal(cmd, display_name)
+            end
+
+            -- Ask once per session
+            if _G.code_runner_cleanup then
+                return run(_G.code_runner_cleanup)
+            end
+            vim.ui.select({ "Yes", "No" }, { prompt = "Delete executable & objects after run?" }, function(choice)
+                if not choice then return end -- Abort if user presses Esc
+                _G.code_runner_cleanup = choice
+                run(choice)
             end)
         end
 
@@ -107,15 +133,17 @@ local function execute_code(force_single)
             local target_name = _G.cpp_runner_targets[makefile_path]
 
             local function execute_make()
-                vim.notify("Running make in " .. makefile_dir .. "...", vim.log.levels.INFO, { title = "Code Runner" })
-                vim.system({ "bash", "-c", "make -C " .. vim.fn.shellescape(makefile_dir) .. " clean && make -C " .. vim.fn.shellescape(makefile_dir) }, { text = true }, function(obj)
-                    vim.schedule(function()
-                        if obj.code ~= 0 then
-                            vim.notify("Make Failed:\n" .. obj.stderr, vim.log.levels.ERROR, { title = "Code Runner" })
-                        else
-                            vim.notify("Make Successful!", vim.log.levels.INFO, { title = "Code Runner" })
-                            prompt_and_run(makefile_dir .. "/" .. target_name, target_name, makefile_dir)
-                        end
+                ask_args(makefile_path, target_name, function(args)
+                    vim.notify("Running make in " .. makefile_dir .. "...", vim.log.levels.INFO, { title = "Code Runner" })
+                    vim.system({ "bash", "-c", "make -C " .. vim.fn.shellescape(makefile_dir) .. " clean && make -C " .. vim.fn.shellescape(makefile_dir) }, { text = true }, function(obj)
+                        vim.schedule(function()
+                            if obj.code ~= 0 then
+                                vim.notify("Make Failed:\n" .. obj.stderr, vim.log.levels.ERROR, { title = "Code Runner" })
+                            else
+                                vim.notify("Make Successful!", vim.log.levels.INFO, { title = "Code Runner" })
+                                prompt_and_run(makefile_dir .. "/" .. target_name, target_name, makefile_dir, args)
+                            end
+                        end)
                     end)
                 end)
             end
@@ -139,15 +167,17 @@ local function execute_code(force_single)
             -- Branch B: No Makefile OR user explicitly forced single-file mode
             local compiler = (filetype == "cpp") and "g++" or (filetype == "c") and "gcc" or "rustc"
 
-            vim.notify("Compiling single file: " .. file_name .. "...", vim.log.levels.INFO, { title = "Code Runner" })
-            vim.system({ compiler, "-g", file_path, "-o", single_out_file }, { text = true }, function(obj)
-                vim.schedule(function()
-                    if obj.code ~= 0 then
-                        vim.notify("Compilation Failed:\n" .. obj.stderr, vim.log.levels.ERROR, { title = "Code Runner" })
-                    else
-                        vim.notify("Compilation Successful!", vim.log.levels.INFO, { title = "Code Runner" })
-                        prompt_and_run(single_out_file, file_name, nil)
-                    end
+            ask_args(file_path, file_name, function(args)
+                vim.notify("Compiling single file: " .. file_name .. "...", vim.log.levels.INFO, { title = "Code Runner" })
+                vim.system({ compiler, "-g", file_path, "-o", single_out_file }, { text = true }, function(obj)
+                    vim.schedule(function()
+                        if obj.code ~= 0 then
+                            vim.notify("Compilation Failed:\n" .. obj.stderr, vim.log.levels.ERROR, { title = "Code Runner" })
+                        else
+                            vim.notify("Compilation Successful!", vim.log.levels.INFO, { title = "Code Runner" })
+                            prompt_and_run(single_out_file, file_name, nil, args)
+                        end
+                    end)
                 end)
             end)
         end
