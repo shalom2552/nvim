@@ -12,6 +12,7 @@ vim.opt.cursorline = false -- no current line highlight
 
 vim.opt.textwidth = 80 -- wrap line text at 80 caracters
 
+vim.o.pumborder = "rounded" -- border for popup menus
 vim.o.winborder = "rounded" -- default border for all floating windows
 
 -- LazyVim uses system clipboard by default (unnamedplus), but it breakes on ssh since
