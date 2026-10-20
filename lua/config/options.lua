@@ -11,6 +11,7 @@ vim.opt.pumblend = 0 -- no popup menu blend
 vim.opt.cursorlineopt = "number" -- no current line highlight
 
 vim.opt.textwidth = 80 -- wrap line text at 80 caracters
+vim.o.fixendofline = false -- keep existing final newline state
 
 vim.o.pumborder = "rounded" -- border for popup menus
 vim.o.winborder = "rounded" -- default border for all floating windows
