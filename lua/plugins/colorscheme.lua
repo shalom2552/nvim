@@ -13,6 +13,7 @@ return {
             float = { transparent = true },
             custom_highlights = function(c)
                 return {
+                    LineNr = { fg = c.overlay1 }, -- line numbers
                     BlinkCmpScrollBarThumb = { bg = c.blue }, -- scrollbar color
                 }
             end,

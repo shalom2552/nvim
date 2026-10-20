@@ -8,7 +8,7 @@ vim.o.softtabstop = 4 -- Number of spaces inserted instead of a TAB character
 vim.o.shiftwidth = 4 -- Number of spaces inserted when indenting
 
 vim.opt.pumblend = 0 -- no popup menu blend
-vim.opt.cursorline = false -- no current line highlight
+vim.opt.cursorlineopt = "number" -- no current line highlight
 
 vim.opt.textwidth = 80 -- wrap line text at 80 caracters
 
