@@ -17,7 +17,7 @@ return {
                 --     win_options = { winhighlight = "Normal:Normal,FloatBorder:Normal", },
                 -- },
                 split = { size = "30%" },
-                popup = { size = { width = "70%", height = "60%" } },
+                popup = { size = { width = "70%", height = "80%" }, win_options = { wrap = true } },
                 cmdline_input = { position = { row = "95%", col = "50%" } }, -- input prompts
             })
 
@@ -25,8 +25,7 @@ return {
             opts.routes = vim.list_extend(opts.routes or {}, {
                 { -- output shell messages to popup (e.g. :!ls, :!make)
                     filter = { event = "msg_show", kind = { "shell_out", "shell_err" } },
-                    view = "popup",
-                    -- view = "split",
+                    view = "messages", -- "popup", "split", "messages"
                 },
             })
 
