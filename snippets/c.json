@@ -1,0 +1,15 @@
+{
+    "hello": {
+        "prefix": "hello",
+        "description": "Simple C starter",
+        "body": [
+            "#include <stdio.h>",
+            "",
+            "int main(void)",
+            "{",
+            "\tprintf(\"Hello, Wolrd!\");$0",
+            "\treturn 0;",
+            "}"
+        ]
+    }
+}

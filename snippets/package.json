@@ -1,6 +1,10 @@
 {
     "name": "snippets",
     "contributes" : {
-        "snippets" : [{ "language": ["all"], "path": "./all.json" }]
+        "snippets" : [
+            { "language": ["all"], "path": "./all.json" },
+            { "language": ["c"], "path": "./c.json" },
+            { "language": ["c", "cpp"], "path": "./c-cpp.json" }
+        ]
     }
 }

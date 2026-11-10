@@ -1,0 +1,7 @@
+{
+    "fori": {
+        "prefix": "fori",
+        "description": "for i in range (size_t)",
+        "body": ["for (size_t i = $1; i < $2; ++i) {", "\t$0", "}"]
+    }
+}

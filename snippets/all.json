@@ -2,5 +2,15 @@
     "todo": { "prefix": "todo", "body": "$LINE_COMMENT TODO: $0" },
     "note": { "prefix": "note", "body": "$LINE_COMMENT NOTE: $0" },
     "fix": { "prefix": "fix", "body": "$LINE_COMMENT FIX: $0" },
-    "hack": { "prefix": "hack", "body": "$LINE_COMMENT HACK: $0" }
+    "hack": { "prefix": "hack", "body": "$LINE_COMMENT HACK: $0" },
+
+    "author": {
+        "prefix": "author",
+        "body": [
+            "$LINE_COMMENT author: $1\n",
+            "$LINE_COMMENT date: ${CURRENT_YEAR}-${CURRENT_MONTH}-${CURRENT_DATE}\n",
+            "$0"
+        ]
+    }
+
 }
